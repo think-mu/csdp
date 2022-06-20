@@ -8,9 +8,34 @@
               <el-radio-button
                 v-for="(item, index) in btnName"
                 :label="item"
+                :key="item"
               ></el-radio-button>
             </el-radio-group>
           </div>
+        </div>
+        <div class="map-hd">
+          <p class="title">今日统计数据 ▶</p>
+          <ul>
+            <li>
+              <span>{{ totalData[0].JCS }}</span><span>检查总数</span>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <span>{{ totalData[0].FHS }}</span><span>通过数</span>
+            </li>
+          </ul>  
+          
+          <ul>
+            <li>
+              <span>{{ totalData[0].BFHS }}</span><span>不通过数</span>
+            </li>
+          </ul>  
+          <ul>  
+            <li>
+              <span>{{ totalData[0].ZGS }}</span><span>限期整改数</span>
+            </li>
+          </ul>
         </div>
         <s-card :title="titleLabel1" class="map">
           <template v-slot:select >
@@ -25,35 +50,23 @@
               placeholder="选择年份">
             </el-date-picker>
           </template>
-          <div class="map-hd">
-            <ul>
-              <li>
-                <span>{{ totalData[0].FHS }}</span><span>符合数</span>
-              </li>
-            </ul>  
-            <ul>
-              <li>
-                <span>{{ totalData[0].JCS }}</span><span>检查数</span>
-              </li>
-            </ul>
-            <ul>
-              <li>
-                <span>{{ totalData[0].BFHS }}</span><span>不符合数</span>
-              </li>
-            </ul>  
-            <ul>  
-              <li>
-                <span>{{ totalData[0].ZGS }}</span><span>整改数</span>
-              </li>
-            </ul>
-          </div>
+          
           <map-echart
-            height="695px"
+            height="605px"
             width="100%"
             :mapData="mapData"
             :mapName="mapItem"
+            @barClick="showArea"
           ></map-echart>
         </s-card>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogTableDate" :modal='false' height="200" center :modal-append-to-body="true" >
+          <el-table :data="gridDateData" height="500">
+            <el-table-column property="REGIONNAME" label="街道" width="220"></el-table-column>
+            <el-table-column property="XYZG" label="需整改数量" ></el-table-column>
+            <el-table-column property="YZGCNUM" label="已整改数量" ></el-table-column>
+            <el-table-column property="CHECKNUM" label="检查数量" ></el-table-column>
+          </el-table>
+        </el-dialog>
       </el-col>
       <el-col :span="12" class="content-right">
         <s-card :title="titleLabel2" class="content-right-pie">
@@ -101,9 +114,11 @@
                 <el-date-picker
                   v-model="formSpecial.year"
                   type="year"
+                  :clearable="false"
                   popper-class="yselect"
                   :picker-options="pickerOptions"
                   :popper-append-to-body="false"
+                  @change="changePlanYear"
                   placeholder="选择年">
                 </el-date-picker>
               </el-form-item>
@@ -135,6 +150,7 @@
             :mixXdata="mixXdata"
             :mixLineData="mixLineData"
             :mixBarData="mixBarData"
+            :successData="successData"
             v-if="!switchValue && isShowSec"
           ></mix-echart>
           <!-- <stack-echart
@@ -236,8 +252,8 @@ export default {
         '日常检查',
         '专项检查',
         // '零售药店GSP跟踪检查',
-        '有因检查',
-        '飞行检查'
+        // '有因检查', 测试版本
+        // '飞行检查'
       ],
       mapData: [],
       pieAllData: [],
@@ -269,12 +285,13 @@ export default {
       mixXdata: [], //专项混合图x轴数
       mixLineData: [], //专项混合图折线数据
       mixBarData: [], // 专项混合图柱形数据
+      successData: [], // 专项混合图完成任务量数据
       // stackData: [], //gsp堆积图数据
       // stackSimpleData: [],
       stackSimpleDatai:{},//专项详细数据
       formSpecial: {
         year: new Date('2021'),
-        plan: 481
+        plan: null
       }, //筛选
       PlanData1: [
         {
@@ -320,14 +337,15 @@ export default {
               time.getTime() < new Date('2019')
             )
           },
-      }
+      },
       // mapOptions: this.getOption()
-
+      itemSelect: '',
+      dialogTableDate: false, //地图弹窗响应
+      gridDateData: [], //地图辖区表格数据
+      dialogTitle: ''
     }
   },
   created() {
-    this.getPlanInfo({ vYaer: this.formSpecial.year,vPlanId: this.formSpecial.plan })
-    // console.log(this.PlanData);
     this.getTotalData()
     this.getMapInfo()
     this.getBarFri()
@@ -410,22 +428,26 @@ export default {
       },
   },
   methods: {
+    showArea(param) {
+      this.dialogTitle = param.name + '数据'
+      this.dialogTableDate = true
+      this.gridDateData= []
+      
+      
+      this.getStreetInfo({ VRegion: param.name,vYaer: this.mapYear.getFullYear(),vCategory: this.itemSelect})
+      
+    },
     // getOption() {
     //     let that = this
-    //     console.log(that.radio,"xxx");
-
     //     return{ 
           
     //       disabledDate:(time)=> {
     //         if(that.radio == '日常检查'){
-    //           console.log(that.radio,"xxx1");
-
     //           return (
     //             time.getTime() > Date.now() ||
     //             time.getTime() < new Date('2016')
     //           )
     //         }else if (that.radio == '专项检查'){
-    //           console.log(that.radio,"xxx2");
     //            return (
     //             time.getTime() > Date.now() ||
     //             time.getTime() < new Date('2021')
@@ -472,6 +494,19 @@ export default {
             value: item
           }
         })
+      })
+    },
+    getStreetInfo({ VRegion='',vYaer = 2021, vCategory = '日常检查' } = {}) {
+      const data = {
+        region: VRegion,
+        level: 1,
+        action: 'normal',
+        type: 'T02',
+        year: vYaer,
+        category: vCategory
+      }
+      mainInfo(qs.stringify(data)).then((res) => {
+        this.gridDateData = res.data
       })
     },
     getGspInfo({ vYaer = 2021 } = {}) {
@@ -549,6 +584,9 @@ export default {
           this.mixBarData = res.data.map((item) => {
             return item.JCRWL
           })
+          this.successData = res.data.map((item) => {
+            return item.SUCCESSNUM
+          })
           this.mixLineData = res.data.map((item) => {
             return parseInt(item.WCBFB)
           })
@@ -556,9 +594,10 @@ export default {
           this.planData = res.data.map((item) => {
             return { label: item.PLAN_NAME, value: item.PLAN_ID }
           })
+          this.formSpecial.plan = this.planData[0].value
+          this.getPlanInfo({ vYaer: this.formSpecial.year,vPlanId: this.formSpecial.plan })
         }
         // else if(vLevel==3){ //获取筛选方案信息
-        //   console.log(res,"999");
         //   this.stackSimpleDatai.REGIONNAME = res.data.map((item) => {
         //     return item.GROUPNAME
         //   })
@@ -594,7 +633,6 @@ export default {
         planId: vPlanId
       }
       mainInfo(qs.stringify(data)).then((res) => {
-        // console.log(res.data, 'planData')
           this.stackSimpleDatai.REGIONNAME = res.data.map((item) => {
             return item.GROUPNAME
           })
@@ -613,7 +651,6 @@ export default {
           this.stackSimpleDatai.FLAG = res.data.map((item) => {
             return parseInt(item.FLAG)
           })
-          // console.log(this.stackSimpleDatai,"000");
           if(this.switchValue){
             this.$nextTick(() => { 
                   this.$refs.se.draw();
@@ -696,6 +733,7 @@ export default {
       this.mapYear = new Date('2021')
       this.barYear = new Date('2021')
       this.getTotalData({ vCategory: val })
+      this.itemSelect = val
       // if (val == '零售药店GSP跟踪检查') {
       //   this.isShowFri = false
       //   this.isShowSec = false
@@ -752,7 +790,6 @@ export default {
           // this.getMixSec({ vYaer: yy,vLevel: 3, vPlanId: this.formSpecial.plan })
           // this.isShowSecCh = true
         } else {
-          // console.log('error submit!!');
           return false;
         }
       });
@@ -780,6 +817,9 @@ export default {
     // changeStackYear(param) {
     //   this.getStackThi({vYaer:param.getFullYear(),pickId:2})
     // },
+    changePlanYear(param) {
+      this.getMixSec({vYaer:param.getFullYear(),vLevel:2})
+    },
     
   }
 }
@@ -854,7 +894,7 @@ export default {
     width: 100%;
     border-radius: 5px;
     // background: linear-gradient(to right, #82badf8f, #0ca6daa1) !important;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 
     &-btn {
       line-height: 50px;
@@ -956,47 +996,56 @@ export default {
       }
     } */
   }
-  .map {
-    position: relative;
-    .map-hd {
-      position: absolute;
-      top: 50px;
-      left: -10px;
-      display: flex;
-      width:56%;
-      ul {
-        width: 260px;
-        li {
-          flex: 1;
-          list-style-type: none;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-evenly;
-          text-align: center;
-          height: 113px;
-          background: url('../../../assets/img/total-icon.png') no-repeat center
-            top;
-        }
-        span:first-child {
-          font-family: 'electronicFont';
-          line-height: 40px;
-          font-size: 40px;
-          margin-top: 10px;
-          // color: #faa60b;
-          background-image: -webkit-linear-gradient(bottom, #ff7200, #ffee30);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        span:last-child {
-          font-family: 'electronicFont';
-          line-height: 18px;
-          font-size: 18px;
-          color: #e5f0f1;
-          text-shadow: 2px 2px 8px #aaf2ff;
-          margin-top: 30px;
-        }
+  .map-hd {
+    // position: absolute;
+    // top: 50px;
+    // left: -10px;
+    display: flex;
+    width:100%;
+    ul {
+      width: 220px;
+      li {
+        flex: 1;
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        text-align: center;
+        height: 46px;
+        background: url('../../../assets/img/total-icon.png') no-repeat center top;
+        background-size: 60px 60px;
+        margin-bottom: 10px;
+      }
+      span:first-child {
+        font-family: 'electronicFont';
+        line-height: 45px;
+        font-size: 36px;
+        margin-top: 4px;
+        // color: #faa60b;
+        background-image: -webkit-linear-gradient(bottom, #ff7200, #ffee30);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      span:last-child {
+        font-family: 'electronicFont';
+        line-height: 18px;
+        font-size: 18px;
+        color: #e5f0f1;
+        text-shadow: 2px 2px 8px #aaf2ff;
+        margin-top: 15px;
       }
     }
+    .title {
+      width: 220px;
+      color:rgba(231, 231, 231, 0.932) !important;
+      font-size: 16px;
+      justify-content: center;
+      margin-right: -40px;
+    }
+  }
+  .map {
+    position: relative;
+    
   }
 
   .content-right {
@@ -1004,10 +1053,12 @@ export default {
     display: flex;
     flex-direction: column;
     .content-form {
+
       margin-top: 20px;
-      display: flex;
+      // display: flex;
       align-items: center;
-      flex-direction: row;
+      // flex-direction: row-reverse;
+      justify-content: space-between;
     }
     &-pie {
       margin-bottom: 15px;

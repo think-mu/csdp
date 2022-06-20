@@ -1,4 +1,5 @@
-let areaData = ['荔湾区','海珠区','越秀区','天河区','黄埔区','白云区','番禺区','南沙区','从化区','花都区','增城区']
+// let areaData = ['越秀区','海珠区','荔湾区','天河区','白云区','黄埔区','花都区','番禺区','南沙区','从化区','增城区']
+let areaData = ['越秀区','海珠区','荔湾区','天河区','白云区','黄埔区','花都区','番禺区','南沙区','从化区','增城区']
 const coordinateData = {
   荔湾区: [113.243038, 23.074943],
   海珠区: [113.372008, 23.083131],
@@ -30,7 +31,6 @@ export const convertData = function (data) {
 }
 //重构分类分级地图数据
 export const levelData = function (data) {
-  // console.log(data);
   let res = []
   let arr = []  
   let dataInfo = {};
@@ -76,6 +76,53 @@ export const levelData = function (data) {
     }
   })
 
-  // console.log(arr,"level");
+  return res
+}
+
+//重构企业情况地图数据
+export const typeData = function(data) {
+  let res = []
+  let arr = []  
+  let dataInfo = {};
+  data.forEach((item, index) => {
+    let { REGION,CLASS_NAME } = item;
+    if (!dataInfo[REGION]) {
+      dataInfo[REGION] = [
+        {REGION: item.REGION}
+      ]
+    }
+    let obj = {}
+    obj[CLASS_NAME] = item.NUM,
+    dataInfo[REGION].push(obj);
+  });
+  
+  let type = ["化妆品生产企业","化妆品经营企业"]
+  arr = Object.values(dataInfo).map((item)=> {  //增加缺省类型的数据值
+    return Object.assign({}, ...item);
+  }).map((obj)=> {
+    type.forEach((item) => {
+      if (!obj.hasOwnProperty(item)){
+        obj[item] = 0
+      }
+    })
+      return obj
+  }) 
+  let rArr = arr.map((item) => {  //提取数据中的区域集合
+    return item.REGION
+  }) 
+  areaData.forEach((item,index) => {  //增加缺省区域默认数据
+    if(rArr.indexOf(item)==-1){
+      arr.push({REGION:item,"化妆品生产企业":0,"化妆品经营企业":0})
+    }
+  })
+  arr.forEach((item)=> {
+    const geoCoord = coordinateData[item.REGION]
+    if (geoCoord) {
+      res.push({
+        name: item.REGION,
+        value: [].concat(item)
+      })
+    }
+  })
   return res
 }

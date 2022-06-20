@@ -36,7 +36,6 @@ export default {
   activated () {
     // this.$refs.echartDivRef.refresh()
     // this.draw()
-    console.log("---000---");
     // if(this.echartInstance) {
     //   setTimeout(() => {
     //     this.echartInstance.resize()
@@ -65,20 +64,16 @@ export default {
       // echartInstance.getZr().off('click');
       this.echartInstance.on('click', 'series', function (params) {
         
-        const pointInPixel = [params.offsetX, params.offsetY];
-        if (this.echartInstance.containPixel("grid", pointInPixel)) {
-            let pointInGrid = this.echartInstance.convertFromPixel({
-						seriesIndex: 0
-					}, pointInPixel);
-					let xIndex = pointInGrid[0]; //索引
-        //   let xIndex = echartInstance.convertFromPixel({ seriesIndex: 0 }, [
-        //     params.offsetX,
-        //     params.offsetY,
-        // ])[0];
-					let handleIndex = Number(xIndex);
-					let seriesObj = this.echartInstance.getOption(); //图表object对象
-           that.$emit('pieClick',seriesObj,handleIndex)
-       } 
+      // const pointInPixel = [params.offsetX, params.offsetY];
+      //   if (this.echartInstance.containPixel("grid", pointInPixel)) {
+      //       let pointInGrid = this.echartInstance.convertFromPixel({
+			// 			seriesIndex: 0
+			// 		}, pointInPixel);
+			// 		let xIndex = pointInGrid[0]; //索引
+			// 		let handleIndex = Number(xIndex);
+			// 		let seriesObj = this.echartInstance.getOption(); //图表object对象
+      //      that.$emit('pieClick',seriesObj,handleIndex)
+      //  } 
         that.$emit('pieClick',params)
 
       });
@@ -95,8 +90,6 @@ export default {
 
       setTimeout(() => {
         try {
-            // echartInstance.clear()
-            // this.echartInstance.setAttribute('_echarts_instance_', '')
             this.echartInstance.setOption(that.options,true)
         } catch (error) {}
       }, 1000) //加延时,先获取数据在加载图表.

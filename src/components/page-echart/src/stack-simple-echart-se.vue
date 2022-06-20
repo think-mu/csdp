@@ -253,8 +253,6 @@ export default {
       this.$emit('barClick', param)
     },
     draw(){
-      // console.log(this.stackData,"s0");
-      // console.log(typeof this.stackData,"类型")
       this.charts = echarts.init(document.getElementById('ec'))
       this.charts.setOption({
         tooltip: {
@@ -292,7 +290,9 @@ export default {
             type: 'category',
             data: this.stackData.REGIONNAME,
             axisTick: {
-              show: false
+              show: true,
+              inside: true,
+              length: 6 
             },
             axisLine: {
               show: false,
@@ -301,6 +301,7 @@ export default {
               }
             },
             axisLabel: {
+              interval: 0,
               fontSize: 14
             }
           
@@ -339,26 +340,19 @@ export default {
             name: '计划数',
             type: 'bar',
             itemStyle: this.optionItemStyle('rgba(55,255,249,1)','rgba(0,222,215,0.5)'),
-            barWidth: 15,
+            barWidth: 10,
             data: this.stackData.PLANNUM,
             emphasis: {
               focus: 'series'
             },
-            stack: 'Search Engine',
-
-            // markLine: {
-            //   lineStyle: {
-            //     type: 'dashed'
-            //   }
-            //   // data: [[{ type: 'min' }, { type: 'max' }]]
-            // }
+            // stack: 'Search Engine',  测试版本
           },
           {
             name: '检查数',
             type: 'bar',
             itemStyle: this.optionItemStyle('rgba(255,252,0,1)','rgba(255, 251, 0, 0.522)'),
             barWidth: 10,
-            stack: 'Search Engine',
+            // stack: 'Search Engine',
             emphasis: {
               focus: 'series'
             },
@@ -367,8 +361,9 @@ export default {
           {
             name: '待复核检查数',
             type: 'bar',
+            barWidth: 10,
             itemStyle: this.optionItemStyle('rgb(170,191,255)','rgba(170,191,255,.5)'),
-            stack: 'Search Engine',
+            // stack: 'Search Engine',
             emphasis: {
               focus: 'series'
             },
@@ -377,8 +372,9 @@ export default {
           {
             name: '未检查数',
             type: 'bar',
+            barWidth: 10,
             itemStyle: this.optionItemStyle('rgb(255,148,136)','rgba(255,148,136,.5)'),
-            stack: 'Search Engine',
+            // stack: 'Search Engine',
             emphasis: {
               focus: 'series'
             },
@@ -450,7 +446,6 @@ export default {
   watch: {
     fromData: { 
         handler(newVal, oldVal) {
-          // console.log(newVal, oldVal,"scscsc");
           // this.draw()
           this.$nextTick(() => {
             this.draw()

@@ -33,6 +33,9 @@ export default {
     mixLineData: {
       type: Array
     },
+    successData: {
+      type: Array
+    },
     mixBarData: {
       type: Array
     }
@@ -166,6 +169,19 @@ export default {
                 barBorderRadius: 6
               }
             }
+          },
+          {
+            name: '完成任务量',
+            type: 'line',
+            data: this.successData,
+            yAxisIndex: 1,
+            color: '#ffe894',
+            itemStyle: {
+              opacity: 0,
+            },
+            lineStyle: {
+              opacity: 0,
+            } 
           },
           {
             name: '完成百分比（%）',

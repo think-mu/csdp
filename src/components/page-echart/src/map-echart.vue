@@ -4,6 +4,7 @@
       :options="options"
       :height="height"
       :width="width"
+      @pieClick="barClick"
     ></base-echart>
   </div>
 </template>
@@ -39,7 +40,11 @@ export default {
     return {}
   },
   mounted() {},
-  methods: {},
+  methods: {
+     barClick(param) {
+      this.$emit('barClick', param)
+    }
+  },
   computed: {
     options() {
       return {

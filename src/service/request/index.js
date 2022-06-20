@@ -58,7 +58,6 @@ class SRequest {
         }
         //判断httperrorCOde 显示不同的错误信息
         if (err.response) {
-          // console.log('44')
         }
       }
     )
@@ -67,7 +66,6 @@ class SRequest {
     //单独拦截
     return new Promise((resolve, reject) => {
       // 单个请求对请求config的处理
-      // console.log(config,"config");
       // if (config.interceptors) {
       //   config = config.interceptors.requestInterceptor(config)
       // }

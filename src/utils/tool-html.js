@@ -4,11 +4,24 @@ export function toolHtmlI(params) {
       padding: 12px 20px; border:1px transparent solid;border-image:linear-gradient(to right,rgba(4,127,156,1),#e9eceb,#01cfff) 1 10; border-radius: 2px;
       \'>
     <div style=\'text-align:center;margin-top: 5px; font-size: 20px;color: #fff;;letter-spacing: 0;padding: 0px;\'> ${params.name}</div>
-    <div style=\'\'>
-      <div style=\'font-size: 15px;color: #00efff;text-align:center;margin-top: 16px;\'>
-        <span style=\'text-align:center;font-size: 24px; font-weight: bold;color:#00efff;\'>
-          ${params.data.value[2]} 
-        </span> 家
+    <div style=\'display: flex;flex-direction: column;align-items: left;\'>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>化妆品企业数量</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;color:#00efff;\'>
+          ${params.data.value[2]['化妆品生产企业']+params.data.value[2]['化妆品经营企业']}家
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>化妆品生产企业</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;color:#00efff;\'>
+          ${params.data.value[2]['化妆品生产企业']}家
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>化妆品经营企业</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;color:#00efff;\'>
+          ${params.data.value[2]['化妆品经营企业']}家
+        </span> 
       </div>
     </div>
   </div>`
@@ -314,10 +327,16 @@ export function toolHtmlMix(params) {
           </span> 
       </div>
       <div style=\'font-size: 18px;display:flex; justify-content:space-between;align-items: center;text-align:left;margin-top: 10px;\'>
+        <span style=\'margin-right:10px;'>${params[1].marker}完成任务量</span>
+        <span style=\'text-align:center;font-size: 22px; font-weight: bold;color:#00efff;\'>
+        ${params[1].value}
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;display:flex; justify-content:space-between;align-items: center;text-align:left;margin-top: 10px;\'>
         <div style=\'height:10px;width: 10px; border-radius: 5px; background-color: ${params[1].color}; !important;margin-right:10px;\'></div>
         <span style=\'margin-right:10px;'>完成百分比（%）</span>
         <span style=\'text-align:center;font-size: 22px; font-weight: bold;color:#00efff;\'>
-         ${params[1].value}%
+         ${params[2].value}%
         </span> 
       </div>
     </div>

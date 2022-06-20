@@ -19,7 +19,6 @@
                 :index="subitem.id + ''"
                 @click="handleMenuItemClick(subitem)"
               >
-                
                 <span>{{ subitem.name }}</span>
               </el-menu-item>
             </template>

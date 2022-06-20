@@ -121,13 +121,17 @@ export default {
 
 .card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
   align-items: center;
   height: 60px;
   position: relative;
   &-title {
-    margin-left: 16px;
+    position:absolute;
+    left:0px;
+    margin-left: 8px;
     margin-bottom: 5px;
+    margin-right: 10px;
     img {
       margin-right: 15px;
     }

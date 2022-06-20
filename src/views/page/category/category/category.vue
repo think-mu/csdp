@@ -4,6 +4,14 @@
       <el-col :span="11">
         <s-card :title="titleLabel1" class="map">
           <template v-slot:select>
+            <el-select v-model="typeValue" @change="typeSelect" class="content-select" :popper-append-to-body="false" >
+              <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             <el-date-picker
               v-model="cYear"
               type="year"
@@ -14,14 +22,7 @@
               @change="changeYear"
               placeholder="选择年份">
             </el-date-picker>
-            <el-select v-model="typeValue" @change="typeSelect" class="content-select" :popper-append-to-body="false" >
-              <el-option
-                v-for="item in typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+
           </template>
           <map-echart height="750px" :mapData="mapData" mapName="category"></map-echart>
         </s-card>
@@ -104,13 +105,15 @@ import { levelData,convertData } from '@/utils/convert-data'
         yData1: [],
         isShowIcon: false, //是否现实柱形图返回按钮
         typeOptions: [],//企业类型
-        typeValue: "全部",
-        titleLabel1: '全部企业信用分级',
-        titleLabel2: '全部企业信用分级',
+        typeValue: "化妆品生产企业",
+        // titleLabel1: '全部企业信用分级',
+        // titleLabel2: '全部企业信用分级',
+        titleLabel1: '化妆品生产企业信用分级',
+        titleLabel2: '化妆品生产企业信用分级',
         pickerOptions: {
           disabledDate(time) {
             return (  //Date.now()
-              time.getTime() > new Date('2021') ||
+              time.getTime() > Date.now() ||
               time.getTime() < new Date('2015')
             )
           },
@@ -129,15 +132,15 @@ import { levelData,convertData } from '@/utils/convert-data'
     methods: {
       /* 数据获取 start */
       //获取地图数据
-      getCategoryInfo({ vYear = 2021, vClassName = '' } = {}) {
+      getCategoryInfo({ vYear = 2021, vClassName = '化妆品生产企业' } = {}) {
         let arr = this.$store.state.typeValue
         // this.typeOptions = arr.map((item,index) => {
         //   return { label: item.value, value: item.value }
         // })
         this.typeOptions = [
-          {label: "全部",value: "全部"},
+          // {label: "全部",value: "全部"},
           {label: "化妆品生产企业",value: "化妆品生产企业"},
-          {label: "化妆品经营企业",value: "化妆品经营企业"},
+          // {label: "化妆品经营企业",value: "化妆品经营企业"},  //企业选择器
 
           ]
         const data = {
@@ -153,7 +156,7 @@ import { levelData,convertData } from '@/utils/convert-data'
         })
       },
       //获取全市各级别企业数量
-      getLevelInfo({ vYear = 2021, vClassName = '' } = {}) {
+      getLevelInfo({ vYear = 2021, vClassName = '化妆品生产企业' } = {}) {
         const data = {
           region: '',
           action: 'credit',
@@ -237,7 +240,6 @@ import { levelData,convertData } from '@/utils/convert-data'
       /* 饼形图事件 start*/
       //全市分级饼形图--点击事件
       pieClick(param) {
-        // console.log(param,"并行");
         this.getPieAraeData(param.name)
         this.pieTitle2 = param.name + '级别化妆品企业数量'
         
@@ -250,22 +252,21 @@ import { levelData,convertData } from '@/utils/convert-data'
         this.getBarAraeData(param.name)
         this.isShowIcon = true
         this.aLabel = param.name+"级别总数（家）"
-        // console.log(param, '柱形图')
       },
       changeShowIcon(val) {
-        // console.log(val)
         this.isShowIcon = val
         this.aLabel = "各级别化妆品企业总数（家）"
       },
       /* 柱形图事件 end*/
       //企业类型选择事件
       typeSelect(param) {
-        console.log(this.cYear);
         if(param == "全部"){
           this.getCategoryInfo({ vYear: this.cYear.getFullYear() })
           this.getLevelInfo({ vYear: this.cYear.getFullYear() })
           this.titleLabel1 = "全部企业信用分级"
           this.titleLabel2 = "全部企业信用分级"
+          // this.titleLabel1 = param+"信用分级"
+          // this.titleLabel2 = param+"信用分级"
         }else {
           this.getLevelInfo({ vClassName: param, vYear: this.cYear.getFullYear() })
           this.getCategoryInfo({ vClassName: param, vYear: this.cYear.getFullYear()})

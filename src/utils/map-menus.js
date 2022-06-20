@@ -1,6 +1,5 @@
 let firstMenu = null
 export function mapMenusRoutes(usersMenus) {
-  // console.log(usersMenus,"usersMenus");
   const routes = []
 
   //默认加载所有routes
@@ -10,7 +9,6 @@ export function mapMenusRoutes(usersMenus) {
     const route = require('../router/main' + key.split('.')[1])
     allRoutes.push(route.default)
   })
-  // console.log(allRoutes);
   //根据菜单获取route
   const _recurseGetRoute = (menus) => {
     for (const menu of menus) {

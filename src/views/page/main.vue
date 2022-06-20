@@ -11,6 +11,8 @@
         <el-main class="page-content">
           <!-- <keep-alive> -->
             <router-view></router-view>
+            <p class="tip">*建议用谷歌、360极速浏览器、火狐浏览器、QQ浏览器10+、IE10+等浏览器，否则页面可能会存在显示异常现象</p>
+
           <!-- </keep-alive> -->
         </el-main>
       </el-container>
@@ -56,6 +58,13 @@ export default {
 .main-content {
   height: 100%;
   position: relative;
+  .tip {
+    color: rgb(194, 194, 194);
+    margin-top: 5px;
+    font-size: 16px;
+    line-height: 16px;
+    margin-bottom: 0;
+  }
 }
 
 .page {
