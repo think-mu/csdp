@@ -66,7 +66,8 @@ export default {
             }
           },
           axisLabel: {
-            fontSize: 14
+            fontSize: 14,
+            interval: 0,
           }
         },
         yAxis: {

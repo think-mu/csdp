@@ -3,11 +3,13 @@
     <el-row :gutter="20">
       <el-col :span="11">
         <div class="map-hd">
-          <p class="title">今日统计数据 ▶</p>
-          <ul>
-            <li><span>{{ totalData.FZS }}</span><span>许可证发证数</span></li>
-            <li><span>{{ totalData.GQS }}</span><span>许可证过期数</span></li>
-          </ul>
+          <p class="title">当前统计数据 ▶</p>
+          <el-tooltip class="item" effect="light" popper-class="hd-tooltip"	 :content="tData" placement="right-start">
+            <ul>
+              <li><span>{{ totalData.FZS }}</span><span>许可证发证数</span></li>
+              <li><span>{{ totalData.GQS }}</span><span>许可证过期数</span></li>
+            </ul>
+          </el-tooltip>
         </div>
         <s-card title="化妆品企业数量" class="map">
           <map-echart height="652px" :mapData="mapData" mapName="detail"></map-echart>
@@ -94,6 +96,7 @@ export default {
       mapData: [], //地图数据
       isShowIcon: false, //是否现实柱形图返回按钮
       totalData: [], //今日统计数据
+      tData: '', //统计数据日期
       aTotal: 0,//柱形图全市企业数量
       bTotal: 0,
       aLabel: "各类型化妆品企业总数（家）",//柱形图全市某企业类型数量
@@ -110,7 +113,10 @@ export default {
     this.getPieAllData()
     this.getTotalData()
   },
-  mounted() {},
+  mounted() {
+    let curDate = new Date(new Date().getTime()-24*60*60*1000);
+    this.tData =`统计日期:${curDate.getFullYear()}/${curDate.getMonth()+1}/${curDate.getDate()}`
+  },
   methods: {
     /* 数据获取 start */
     //获取今天统计数据
@@ -260,7 +266,15 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
+.el-tooltip__popper.is-light{
+  background: rgba(55, 119, 168, 0.9) !important;
+}
+.hd-tooltip {
+  margin-left: -10px !important;
+  color: #fff !important;
+  font-size: 16px;
+}
 .detail {
   // height: 100%;
   .el-row,

@@ -33,7 +33,11 @@ export default {
     },
     yData: {
       type: Array
-    }
+    },
+    unit: {
+      type: String,
+      default: '家'
+    },
   },
   data() {
     return {}
@@ -69,8 +73,8 @@ export default {
           padding: 0,
           backgroundColor: 'opacity',
           borderWidth: 0,
-          formatter: function (params) {
-            return toolHtmlBar(params)
+          formatter: (params) => {
+            return toolHtmlBar(params, this.unit)
           }
         },
         grid: {

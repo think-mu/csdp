@@ -38,6 +38,18 @@ export default {
     legendWidth: {
       type: String,
       default: "300"
+    },
+    unit: {
+      type: String,
+      default: '家'
+    },
+    pieStyleData :{
+      type: Object,
+      default: {
+        imgPosition: '24%',
+        line2: '45',
+        piePosition: '50%'
+      }
     }
   },
   data() {
@@ -55,10 +67,10 @@ export default {
                 z: 3,
                 style: {
                     image: imgSrc,
-                    width: 215,
-                    height: 215
+                    width: 220,
+                    height: 220
                 },
-                left: '26%',
+                left: this.pieStyleData.imgPosition,
                 top: "10%",
                 z: 0
                
@@ -71,8 +83,8 @@ export default {
           trigger: 'item',
           padding: 0,
           borderWidth: 0,
-          formatter: function (params) {
-            return toolHtmlPie(params)
+          formatter: (params) => {
+            return toolHtmlPie(params,this.unit)
           }
         },
         legend: {
@@ -85,7 +97,7 @@ export default {
           backgroundColor: 'rgba(45, 65, 95, 0.8)',
           textStyle: {
             color: '#fff',
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: 'normal'
           },
           icon: "circle",
@@ -112,12 +124,14 @@ export default {
               show: true,
               position: 'outside',
               color: '#fff',
-              fontSize: 16,
+              fontSize: 18,
+              width: 350,
+              overflow: 'none',
               // alignTo: 'labelLine', // 'labelLine'：label line 的末端对齐，其中最短的长度由 labelLine.length2 决定
-              formatter: function (params) {
+              formatter: (params) =>  {
                 // return params.name + '-' + params.value + '家'
                 // return '{txt|'+params.value + '家'+'}';
-                return params.value + '家';
+                return params.value + this.unit;
               },
               // 仅当 label.position 为 'outer' 并且 label.alignTo 为 'none' 或 'labelLine' 的情况有效
               // rich: {  
@@ -132,9 +146,9 @@ export default {
             },
             
             type: 'pie',
-            radius: ['35%', '46%'],
+            radius: ['36%', '50%'],
             data: this.pieData,
-            center: ['52%', '40%'],
+            center: [this.pieStyleData.piePosition, '40%'],
             itemStyle: {
               show: true,
               borderRadius: 8,
@@ -143,15 +157,16 @@ export default {
             emphasis: {
               label: {
                 show: true,
-                fontSize: 20,
-                fontWeight: 'bold'
+                fontSize: 22,
+                fontWeight: 'bold',
+                color: '#00efff'
               },
               scaleSize: 15,
             },
             labelLine: {
               show: true,
               showAbove: true,
-              length2: 60,
+              length2: this.pieStyleData.line2,
               // minTurnAngle: 120,
               lineStyle: {
                 width: 2,

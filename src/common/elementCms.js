@@ -41,6 +41,7 @@ import {
   Col,
   DatePicker,
   Switch,
+  Tooltip,
  } from 'element-ui';
 
 export default Vue => {
@@ -84,6 +85,7 @@ export default Vue => {
   Vue.use(Col);
   Vue.use(DatePicker);
   Vue.use(Switch);
+  Vue.use(Tooltip);
   Vue.prototype.$msgbox = MessageBox
   Vue.prototype.$message = Message
   Vue.prototype.$alert = MessageBox.alert

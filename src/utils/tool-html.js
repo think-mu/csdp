@@ -113,39 +113,45 @@ export function toolHtmlIII(params) {
 export function toolHtmlIV(params) {
   const resultTooltip = 
   `<div style=\'background-image: linear-gradient(to right,rgb(3, 120, 146), rgba(0,29,90,.9)) !important; 
-      padding: 12px 20px; border:1px transparent solid;border-image:linear-gradient(to right,rgba(4,127,156,1),#e9eceb,#01cfff) 1 10; border-radius: 2px;
+      padding: 20px 20px; border:1px transparent solid;border-image:linear-gradient(to right,rgba(4,127,156,1),#e9eceb,#01cfff) 1 10; border-radius: 2px;
       \'>
     <div style=\'text-align:center; font-size: 18px;color: #fff;;letter-spacing: 0;padding: 0px;\'> ${params.name}</div>
-    <div style=\'display: flex;flex-direction: column;align-items: center;\'>
-      <div style=\'font-size: 14px;color: #00efff;text-align:center;margin-top: 15px;\'>
-        <div>
-          <span style=\'text-align:center;font-size: 24px; font-weight: bold;color:#00efff;\'>
-            ${params.data.value[2].CZNUM} 
-          </span> 家
-        </div>  
-        <div style=\'color:#fff; font-size: 18px; margin-top: 5px;\'>
-        <span>处置数</span>
-        </div>
+    <div style=\'display: flex;flex-direction: column;align-items: left;\'>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>立案数量</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold; padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].LANUM} 
+        </span> 
       </div>
-      <div style=\'font-size: 15px;color: #00efff;text-align:center;margin-top: 20px;\'>
-        <div>
-          <span style=\'text-align:center;font-size: 24px; font-weight: bold;color:#00efff;\'>
-            ${params.data.value[2].LANUM} 
-          </span> 家
-        </div>  
-        <div style=\'color:#fff; font-size: 18px; margin-top: 5px;\'>
-        <span>立案数</span>
-        </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>结案数量</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].JANUM} 
+        </span> 
       </div>
-      <div style=\'font-size: 15px;color: #00efff;text-align:center;margin-top: 20px;\'>
-        <div>
-          <span style=\'text-align:center;font-size: 24px; font-weight: bold;color:#00efff;\'>
-            ${params.data.value[2].YSNUM} 
-          </span> 家
-        </div>  
-        <div style=\'color:#fff; font-size: 18px; margin-top: 5px;\'>
-        <span>移送数</span>
-        </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>移送数量</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].YSNUM} 
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>处罚数量</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].CFNUM} 
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>没收金额(元)</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].MSJENUM} 
+        </span> 
+      </div>
+      <div style=\'font-size: 18px;color: #fff;display:flex; justify-content:space-between;text-align:center;margin-top: 20px;\'>
+        <span>罚款金额(元)</span>
+        <span style=\'text-align:center;font-size: 24px;font-weight: bold;padding-left: 15px;color:#00efff;\'>
+          ${params.data.value[2].FKJENUM} 
+        </span> 
       </div>
 
 
@@ -224,7 +230,7 @@ export function toolHtmlVI(params) {
   </div>`
   return resultTooltip
 }
-export function toolHtmlPie(params) {
+export function toolHtmlPie(params, unit) {
   const resultTooltip = 
   `<div style=\'background-color: rgba(20, 74, 116,.9) !important;box-shadow: 0px 0px 3px 2px #01cfff;
       padding: 12px 20px; border:1px transparent solid;border-image:linear-gradient(to right,rgba(4,127,156,1),#e9eceb,#01cfff) 1 10;
@@ -237,13 +243,13 @@ export function toolHtmlPie(params) {
       <div style=\'font-size: 18px;text-align:center;margin-top: 16px;\'>
         <span style=\'text-align:center;font-size: 26px;font-weight: bold;color:#00efff;\'>
           ${params.value} 
-        </span> 家
+        </span> ${unit} 
       </div>
     </div>
   </div>`
   return resultTooltip
 }
-export function toolHtmlBar(params) {
+export function toolHtmlBar(params, unit) {
   const resultTooltip = 
   `<div style=\'background-color: rgba(20, 74, 116,.9);box-shadow: 0px 0px 3px 2px #01cfff;
       padding: 12px 20px; border:1px transparent solid;border-image:linear-gradient(to right,rgba(4,127,156,1),#e9eceb,#01cfff) 1 10;
@@ -254,7 +260,7 @@ export function toolHtmlBar(params) {
         
         <span style=\'text-align:center;font-size: 24px;font-weight: bold;color:#00efff;\'>
           ${params[0].value} 
-        </span> 家
+        </span> ${unit} 
       </div>
     </div>
   </div>`

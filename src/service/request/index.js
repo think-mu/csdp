@@ -95,6 +95,9 @@ class SRequest {
   post(config) {
     return this.request({...config,method:'POST'})
   }
+  wpost(config) {
+    return this.request({...config,method:'POST'})
+  }
   delete(config) {
     return this.request({...config,method:'DELETE'})
   }

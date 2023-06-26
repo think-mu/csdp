@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="map-hd">
-          <p class="title">今日统计数据 ▶</p>
+          <p class="title">当日统计数据 ▶</p>
           <ul>
             <li>
               <span>{{ totalData[0].JCS }}</span><span>检查总数</span>
@@ -56,17 +56,16 @@
             width="100%"
             :mapData="mapData"
             :mapName="mapItem"
-            @barClick="showArea"
           ></map-echart>
         </s-card>
-        <el-dialog :title="dialogTitle" :visible.sync="dialogTableDate" :modal='false' height="200" center :modal-append-to-body="true" >
+        <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogTableDate" :modal='false' height="200" center :modal-append-to-body="true" >
           <el-table :data="gridDateData" height="500">
             <el-table-column property="REGIONNAME" label="街道" width="220"></el-table-column>
             <el-table-column property="XYZG" label="需整改数量" ></el-table-column>
             <el-table-column property="YZGCNUM" label="已整改数量" ></el-table-column>
             <el-table-column property="CHECKNUM" label="检查数量" ></el-table-column>
           </el-table>
-        </el-dialog>
+        </el-dialog> -->
       </el-col>
       <el-col :span="12" class="content-right">
         <s-card :title="titleLabel2" class="content-right-pie">
@@ -272,7 +271,6 @@ export default {
         ZGS: 0
       }],
       radio: '日常检查', //业务按钮选中值
-      pickYear: 2021,
       mapItem: 'review',
       source: [],
       dimensions: [],
@@ -290,7 +288,7 @@ export default {
       // stackSimpleData: [],
       stackSimpleDatai:{},//专项详细数据
       formSpecial: {
-        year: new Date('2021'),
+        year: new Date(),
         plan: null
       }, //筛选
       PlanData1: [
@@ -318,9 +316,9 @@ export default {
           { required: true, message: '请选择方案', trigger: 'change' }
         ],
       },//表单验证规则
-      mapYear: new Date('2021'), //地图年份选择器值
-      barYear: new Date('2021'),
-      mixYear: new Date('2021'),
+      mapYear: new Date(), //地图年份选择器值
+      barYear: new Date(),
+      mixYear: new Date(),
       stackYear: new Date('2021'),
       mixOptions:{
          disabledDate(time) {
@@ -330,19 +328,19 @@ export default {
             )
           },
       },
-      stackOptions:{
+      /* stackOptions:{
          disabledDate(time) {
             return (  //Date.now()
               time.getTime() > new Date('2021') ||
               time.getTime() < new Date('2019')
             )
           },
-      },
+      }, */
       // mapOptions: this.getOption()
       itemSelect: '',
-      dialogTableDate: false, //地图弹窗响应
-      gridDateData: [], //地图辖区表格数据
-      dialogTitle: ''
+      // dialogTableDate: false, //地图弹窗响应
+      // gridDateData: [], //地图辖区表格数据
+      // dialogTitle: ''
     }
   },
   created() {
@@ -428,15 +426,12 @@ export default {
       },
   },
   methods: {
-    showArea(param) {
+    /* showArea(param) {
       this.dialogTitle = param.name + '数据'
       this.dialogTableDate = true
       this.gridDateData= []
-      
-      
       this.getStreetInfo({ VRegion: param.name,vYaer: this.mapYear.getFullYear(),vCategory: this.itemSelect})
-      
-    },
+    }, */
     // getOption() {
     //     let that = this
     //     return{ 
@@ -478,7 +473,7 @@ export default {
       })
     },
     //获取地图数据
-    getMapInfo({ vYaer = 2021, vCategory = '日常检查' } = {}) {
+    getMapInfo({ vYaer = new Date().getFullYear(), vCategory = '日常检查' } = {}) {
       const data = {
         region: '',
         level: 1,
@@ -496,8 +491,8 @@ export default {
         })
       })
     },
-    getStreetInfo({ VRegion='',vYaer = 2021, vCategory = '日常检查' } = {}) {
-      const data = {
+    /* getStreetInfo({ VRegion='',vYaer = 2021, vCategory = '日常检查' } = {}) {
+      const data = {  //地图表格数据
         region: VRegion,
         level: 1,
         action: 'normal',
@@ -508,8 +503,8 @@ export default {
       mainInfo(qs.stringify(data)).then((res) => {
         this.gridDateData = res.data
       })
-    },
-    getGspInfo({ vYaer = 2021 } = {}) {
+    }, */
+    getGspInfo({ vYaer = new Date().getFullYear() } = {}) {
       const data = {
         region: '',
         level: 1,
@@ -526,7 +521,7 @@ export default {
       })
     },
     //获取日常，有因，飞行检查数据
-    getBarFri({ vYaer = 2021, vCategory = '日常检查' } = {}) {
+    getBarFri({ vYaer = new Date().getFullYear(), vCategory = '日常检查' } = {}) {
       const data = {
         region: '',
         level: 2,
@@ -566,7 +561,7 @@ export default {
       })
     },
     //获取专项柱形折线混合数据
-    getMixSec({ vYaer = 2021,vLevel= 1,vPlanId= '' } = {}) {
+    getMixSec({ vYaer = new Date().getFullYear(),vLevel= 1,vPlanId= '' } = {}) {
       const data = {
         region: '',
         action: 'plan',
@@ -622,7 +617,7 @@ export default {
       })
     },
     //获取筛选方案信息
-    getPlanInfo({ vYaer = 2021,vPlanId = 481 } = {}) {
+    getPlanInfo({ vYaer = new Date().getFullYear(),vPlanId = 481 } = {}) {
       const data = {
         region: '',
         action: 'plan',
@@ -730,8 +725,9 @@ export default {
       this.titleLabel1 = val+'全市情况'
       this.titleLabel2 = val+'监督情况'
       this.titleLabel3 = val+'监督情况'
-      this.mapYear = new Date('2021')
-      this.barYear = new Date('2021')
+      this.mapYear = new Date()
+      this.barYear = new Date()
+      this.mixYear = new Date()
       this.getTotalData({ vCategory: val })
       this.itemSelect = val
       // if (val == '零售药店GSP跟踪检查') {
@@ -748,8 +744,7 @@ export default {
         if (val == '专项检查') {
           this.isShowFri = false
           this.isShowSec = true
-          
-          this.getMixSec({ vYaer: this.formSpecial.year.getFullYear(),vLevel: 1 })
+          this.getMixSec({ vYaer: this.mixYear.getFullYear(),vLevel: 1 })
         } else {
           this.isShowFri = true
           this.isShowSec = false

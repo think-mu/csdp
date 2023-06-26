@@ -26,6 +26,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://rcjg.gzfda.gov.cn',
+        // target: 'http://10.194.145.5',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

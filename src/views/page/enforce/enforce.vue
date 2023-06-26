@@ -20,6 +20,7 @@
             :mapData="mapData"
             mapName="enforce"
           ></map-echart>
+          <p class="down-title" @click="downLoad">导出Excel文档</p>
         </s-card>
       </el-col>
       <el-col :span="13" class="content-right">
@@ -41,10 +42,13 @@
             </el-select>
           </template>
           <pie-echart
-            style="padding-left: 20%"
-            height="325px"
-            legendWidth="400"
+            style="margin-left:10%;"
+            height="335px"
+            width="800px"
+            legendWidth="480"
             :pieData="pieAllData"
+            :pieStyleData ='pieStyle'
+            :unit='pUnit'
           ></pie-echart>
         </s-card>
         <s-card title="化妆品违法案件情况" class="content-right-bar">
@@ -74,7 +78,12 @@
             @barClick="barClick"
             v-show="!isShowIcon"
           ></bar-echart>-->
-          <bar-echart height="325px" :xData="xData" :yData="yData"></bar-echart>
+          <bar-echart height="325px" 
+          :xData="xData" 
+          :yData="yData"
+          :unit='bUnit'
+          >
+          </bar-echart>
         </s-card>
       </el-col>
     </el-row>
@@ -87,7 +96,7 @@ import SCard from '@/base-ui/card/card'
 import PieEchart from '@/components/page-echart/src/pie-echart'
 import BarEchart from '@/components/page-echart/src/bar-echart'
 import MapEchart from '@/components/page-echart/src/map-echart'
-import { mainInfo } from 'service/main/main'
+import { mainInfo, exportByIds } from 'service/main/main'
 import { levelData, convertData } from '@/utils/convert-data'
 
 export default {
@@ -109,18 +118,32 @@ export default {
       yData1: [],
       isShowIcon: false, //是否现实柱形图返回按钮
       mainData: [],
+      pUnit: '件',
+      bUnit: '件 ',
       options: [
         {
           value: 'LANUM',
           label: '立案数量'
         },
         {
-          value: 'CZNUM',
-          label: '处置数量'
-        },
-        {
           value: 'YSNUM',
           label: '移送数量'
+        },
+        {
+          value: 'MSJENUM',
+          label: '没收金额'
+        },
+        {
+          value: 'FKJENUM',
+          label: '罚款金额'
+        },
+        {
+          value: 'CFNUM',
+          label: '处罚数量'
+        },
+        {
+          value: 'JANUM',
+          label: '结案数量'
         }
       ],
       optionsBar: [
@@ -129,19 +152,32 @@ export default {
           label: '立案数量'
         },
         {
-          value: 'CZNUM',
-          label: '处置数量'
-        },
-        {
           value: 'YSNUM',
           label: '移送数量'
+        },
+        {
+          value: 'MSJENUM',
+          label: '没收金额'
+        },
+        {
+          value: 'FKJENUM',
+          label: '罚款金额'
+        },
+        {
+          value: 'CFNUM',
+          label: '处罚数量'
+        },
+        {
+          value: 'JANUM',
+          label: '结案数量'
         }
       ],
       value: 'LANUM',
       valueBar: 'LANUM',
       aTotal: 0,
       aLabel: "案件总数（件）",//柱形图数量
-      cYear: new Date('2021'),
+      cYear: new Date(),
+      txtYear: new Date().getFullYear(),
       pickerOptions: {
         disabledDate(time) {
           return (  //Date.now()
@@ -149,6 +185,11 @@ export default {
             time.getTime() < new Date('2012')
           )
         },
+      },
+      pieStyle: {  //饼形图样式
+        imgPosition: '29%',
+        line2: '75',
+        piePosition: '44%'
       }
     }
   },
@@ -160,9 +201,30 @@ export default {
   },
   mounted() {},
   methods: {
+    //下载文档
+    downLoad({ vYear = this.txtYear } = {}) {
+      const data = {
+        action: 'punish',
+        year: vYear,
+        type: 'T02',
+        level: 3
+      }
+      exportByIds(qs.stringify(data)).then((response) => {
+        const blob = new Blob([response])
+        const downloadElement = document.createElement('a')
+        const href = window.URL.createObjectURL(blob) // 创建下载的链接
+        downloadElement.href = href
+        downloadElement.download = '监督执法列表.xlsx' // 下载后文件名
+        document.body.appendChild(downloadElement)
+        downloadElement.click() // 点击下载
+        document.body.removeChild(downloadElement) // 下载完成移除元素
+        window.URL.revokeObjectURL(href) // 释放掉blob对象
+      })
+
+    },
     /* 数据获取 start */
     //获取地图数据
-    getMapInfo({ vYear = 2021 } = {}) {
+    getMapInfo({ vYear = new Date().getFullYear() } = {}) {
       const data = {
         region: '',
         action: 'punish',
@@ -178,12 +240,20 @@ export default {
           }
         })
         this.mainData = res.data
+                
         this.getPieInfo('LANUM')
         this.getBarInfo('LANUM')
       })
     },
     //获取饼图数量
     getPieInfo(val) {
+      if(val=="MSJENUM" || val =="FKJENUM") {
+        // this.aLabel = "金额总数（元）"
+        this.pUnit = '元'
+      }else{
+        // this.aLabel = "案件总数（件）"
+        this.pUnit = '件'
+      }
       this.pieAllData = this.mainData.map((item) => {
         return {
           name: item.REGIONNAME,
@@ -192,6 +262,13 @@ export default {
       })
     },
     getBarInfo(val) {
+      if(val=="MSJENUM" || val =="FKJENUM") {
+        this.aLabel = "金额总数（元）"
+        this.bUnit = '元'
+      }else{
+        this.aLabel = "案件总数（件）"
+        this.bUnit = '件'
+      }
       this.xData = this.mainData.map((item) => {
         return {
           value: item.REGIONNAME
@@ -202,12 +279,19 @@ export default {
           value: item[val]
         }
       })
-      this.aTotal = this.mainData.map((item) => {
+      let formatData = this.mainData.map((item) => {
         return item[val]
       }).reduce((prev,curr) => {
-          return prev+curr
+          return this.formatNum(Number(prev),Number(curr),"+",2)
       })
+      this.aTotal = formatData
+    
     },
+    formatNum(add, reduce, s, num) { //消除加和小数点误差
+         let m = Math.pow(10, num); // num是10的次幂
+         let res = s == '+' ? (add * m + reduce * m) / m : (add * m - reduce * m) / m;
+         return (res * m) / m;
+     },
 
     /* 数据获取 end */
     /* 饼形图事件 start*/
@@ -227,6 +311,7 @@ export default {
     /* 柱形图事件 end*/
     changeYear(param) {
       this.getMapInfo({ vYear: param.getFullYear() })
+      this.txtYear = param.getFullYear()
       this.value = 'LANUM'
       this.valueBar = 'LANUM'
     }
@@ -235,6 +320,16 @@ export default {
 </script>
 
 <style scoped lang="less">
+.map {
+  position: relative;
+  .down-title {
+    position:absolute;
+    bottom: 15px;
+    left: 20px;
+    color: #FFAE00;
+    font-size: 16px;
+  }
+}
 ::v-deep {
   .el-input__inner {
     background-color: rgba(166, 255, 0, 0) !important;

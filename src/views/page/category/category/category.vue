@@ -106,8 +106,6 @@ import { levelData,convertData } from '@/utils/convert-data'
         isShowIcon: false, //是否现实柱形图返回按钮
         typeOptions: [],//企业类型
         typeValue: "化妆品生产企业",
-        // titleLabel1: '全部企业信用分级',
-        // titleLabel2: '全部企业信用分级',
         titleLabel1: '化妆品生产企业信用分级',
         titleLabel2: '化妆品生产企业信用分级',
         pickerOptions: {
@@ -118,7 +116,7 @@ import { levelData,convertData } from '@/utils/convert-data'
             )
           },
         },//年份选择器
-        cYear: new Date('2021'),
+        cYear: new Date(),
         aTotal: 0,//柱形图全市企业数量
         bTotal: 0,
         aLabel: "各级别化妆品企业总数（家）",//柱形图全市某企业类型数量
@@ -132,7 +130,7 @@ import { levelData,convertData } from '@/utils/convert-data'
     methods: {
       /* 数据获取 start */
       //获取地图数据
-      getCategoryInfo({ vYear = 2021, vClassName = '化妆品生产企业' } = {}) {
+      getCategoryInfo({ vYear = new Date().getFullYear(), vClassName = '化妆品生产企业' } = {}) {
         let arr = this.$store.state.typeValue
         // this.typeOptions = arr.map((item,index) => {
         //   return { label: item.value, value: item.value }
@@ -156,7 +154,7 @@ import { levelData,convertData } from '@/utils/convert-data'
         })
       },
       //获取全市各级别企业数量
-      getLevelInfo({ vYear = 2021, vClassName = '化妆品生产企业' } = {}) {
+      getLevelInfo({ vYear = new Date().getFullYear(), vClassName = '化妆品生产企业' } = {}) {
         const data = {
           region: '',
           action: 'credit',
